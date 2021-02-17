@@ -1,6 +1,7 @@
 from datetime import date
 import ast
 
+#НЕ ЧИТАЙТЕ МОЙ КОД ПОЖАВСТА ОН НЕ ДОПИСАН <3
 f = open('config')
 k_str = f.read()
 calendarData = ast.literal_eval(k_str)
@@ -25,21 +26,33 @@ def daysInMonth(year, month):
 		daysamt += 1
 	return daysamt
 
+def checkUp(noteDay):
+	if calendarData.get(noteDay[:4]) = None:
+		calendarData.setdefault(noteDay[:4], {})
+	elif:
+		if calendarData[noteDay[:4]].get(noteDay[5:7]) = None:
+			calendarData[noteDay[:4]].setdefault(noteDay[5:7], {})
+		elif:
+			if calendarData[noteDay[:4]][noteDay[5:7]].get(noteDay[8:]) = None:
+				calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
+
 def inquery(number):
+	noteDay = input("on what day?")
+	checkUp(noteDay)
 	if number == 1:
-		noteDay = int(input("on what day?"))
 		noteText = input("what u want to write in this cell")
-		newNote = Target(noteText)
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append = Target(noteText)
 	if number == 2:
-		noteDay = int(input("on what day?"))
-		return
+		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
 	if number == 3:
-		noteDay = int(input("on what day?"))
-		numb = int(input("concretely one plz (number of target)"))
+		numb = int(input("what number of target?"))
+		#наверное можно избавиться от функции edit класса target
+		outputText = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].note()
+		noteText = input("last note: ", outputText)
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1] = Target(noteText)
 	if number == 4:
-		noteDay = int(input("on what day?"))
-		if len ...
-		numb = int(input("concretely one plz (number of target)"))
+		numb = int(input("what number of target?"))
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
 
 question = int(input("""what u want from me?
 		1 - new target
@@ -49,7 +62,7 @@ question = int(input("""what u want from me?
 		"""))
 
 def printCalendar(): 
-	pass
+	return None
 
 class Target:
 
