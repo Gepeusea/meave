@@ -5,16 +5,21 @@ import ast
 f = open('config')
 k_str = f.read()
 calendarData = ast.literal_eval(k_str)
+#сделать проверку на существование файла 
+#и его создание, в случае, когда проверка не пройдена
+
+#при создании файла стоит не забывать, что если это пустой файл
+#без расширения, то стоит ожиджать ошибки
+#SyntaxError: unexpected EOF while parsing при попытке чтения
 
 mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 #correct date filling is 2021-02-28
-todaysdate = date.today() 
-todaysdatestr = str(date.today())
-daysInMonth = 0
-yearNumber = todaysdatestr[:4]
-monthNumber = todaysdatestr[5:7]
-dayNumder = todaysdatestr[8:] 
+todaysDate = date.today()
+daysInThisMonth = 0
+yearNumber = str(todaysDate)[:4]
+monthNumber = str(todaysDate)[5:7]
+dayNumder = str(todaysDate)[8:] 
 order = date(int(yearNumber), int(monthNumber), 1).weekday()
 
 def daysInMonth(year, month):
@@ -27,21 +32,20 @@ def daysInMonth(year, month):
 	return daysamt
 
 def checkUp(noteDay):
-	if calendarData.get(noteDay[:4]) = None:
+	if calendarData.get(noteDay[:4]) == None:
 		calendarData.setdefault(noteDay[:4], {})
-	elif:
-		if calendarData[noteDay[:4]].get(noteDay[5:7]) = None:
-			calendarData[noteDay[:4]].setdefault(noteDay[5:7], {})
-		elif:
-			if calendarData[noteDay[:4]][noteDay[5:7]].get(noteDay[8:]) = None:
-				calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
+	if calendarData[noteDay[:4]].get(noteDay[5:7]) == None:
+		calendarData[noteDay[:4]].setdefault(noteDay[5:7], {})
+	if calendarData[noteDay[:4]][noteDay[5:7]].get(noteDay[8:]) == None:
+		calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
 
 def inquery(number):
 	noteDay = input("on what day?")
 	checkUp(noteDay)
 	if number == 1:
 		noteText = input("what u want to write in this cell")
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append = Target(noteText)
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(Target(noteText))
+		#calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].dataWriting()
 	if number == 2:
 		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
 	if number == 3:
@@ -49,10 +53,12 @@ def inquery(number):
 		#наверное можно избавиться от функции edit класса target
 		outputText = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].note()
 		noteText = input("last note: ", outputText)
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1] = Target(noteText)
+		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
+			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1] = Target(noteText)
 	if number == 4:
 		numb = int(input("what number of target?"))
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
+		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
+			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
 
 question = int(input("""what u want from me?
 		1 - new target
@@ -60,6 +66,10 @@ question = int(input("""what u want from me?
 		3 - edit target
 		4 - change status of target
 		"""))
+
+def ConcretDayDate(ThatDay):
+	s = str(todaysDate)[:8] + str(ThatDay)
+	return s
 
 def printCalendar(): 
 	return None
@@ -71,7 +81,6 @@ class Target:
 	def __init__(self, text):
 		self.note = text
 		self.flag = False #по умолчанию создаваемая задача считается невыполненной
-		dataWriting()
 
 	def dataWriting(self):
 		f = open('config', 'w')
@@ -89,4 +98,4 @@ class Target:
 if __name__ == '__main__':
 	printCalendar()
 	inquery(question)
-	daysInMonth(yearNumber, monthNumber)
+	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
