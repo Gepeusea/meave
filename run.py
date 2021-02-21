@@ -4,7 +4,9 @@ import ast
 #НЕ ЧИТАЙТЕ МОЙ КОД ПОЖАВСТА ОН НЕ ДОПИСАН <3
 f = open('config')
 k_str = f.read()
-calendarData = ast.literal_eval(k_str)
+calendarDataPrerewrited = ast.literal_eval(k_str)
+calendarData = openingTheDictionary(calendarDataPrerewrited)
+
 #сделать проверку на существование файла 
 #и его создание, в случае, когда проверка не пройдена
 
@@ -68,6 +70,7 @@ def questionForUser():
 		3 - edit target
 		4 - change status of target
 		"""))
+	inquery(question)
 
 def ConcretDayDate(ThatDay):
 	s = str(todaysDate)[:8] + str(ThatDay)
@@ -76,7 +79,8 @@ def ConcretDayDate(ThatDay):
 def printCalendar(): 
 	pass
 
-def dictHandler(someDict, opening):
+def dictHandler(someDict, opening = None):
+	#т.е. False по умолчанию
 
 	def openingTheTarget():
 		openNote = someDict[i1][i2][i3][elemsCounter].note
@@ -104,7 +108,7 @@ def dictHandler(someDict, opening):
 
 def dataWriting():
 		f = open('config', 'w')
-		calendarDataRewrited = openingTheDictionary(calendarData)
+		calendarDataRewrited = openingTheDictionary(calendarData, opening)
 		f.write(str(calendarDataRewrited))
 		f.close()
 
@@ -126,5 +130,5 @@ class Target(object):
 
 if __name__ == '__main__':
 	printCalendar()
-	inquery(question)
+	questionForUser()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
