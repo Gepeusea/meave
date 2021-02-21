@@ -45,9 +45,10 @@ def inquery(number):
 	if number == 1:
 		noteText = input("what u want to write in this cell")
 		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(Target(noteText))
-		#calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].dataWriting()
 	if number == 2:
-		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
+		numb = int(input("what number of target?"))
+		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
+			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
@@ -56,11 +57,12 @@ def inquery(number):
 		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
 			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1] = Target(noteText)
 	if number == 4:
-		numb = int(input("what number of target?"))
-		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
-			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
+		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
+	if (number < 4):
+		dataWriting()
 
-question = int(input("""what u want from me?
+def questionForUser():
+	question = int(input("""what u want from me?
 		1 - new target
 		2 - watch targets on this day
 		3 - edit target
@@ -72,20 +74,47 @@ def ConcretDayDate(ThatDay):
 	return s
 
 def printCalendar(): 
-	return None
+	pass
 
-class Target:
+def dictHandler(someDict, opening):
+
+	def openingTheTarget():
+		openNote = someDict[i1][i2][i3][elemsCounter].note
+		openFlag = someDict[i1][i2][i3][elemsCounter].flag
+		return [openNote, openFlag]
+
+	def closingTheTarget():
+		closeNote = someDict[i1][i2][i3][elemsCounter][0]
+		closeFlag = someDict[i1][i2][i3][elemsCounter][1]
+		newExemplar = Target(closeNote)
+		if newExemplar.flag != closeFlag:
+			newExemplar.changeFlag()
+		return newExemplar
+
+	dictRewrited = someDict.copy() 
+	for i1, j1 in someDict.items():
+		for i2, j2 in someDict[i1].items():
+			for i3, j3 in someDict[i1][i2].items():
+				for elemsCounter in range(len(someDict[i1][i2][i3])):
+					if opening:
+						dictRewrited[i1][i2][i3][elemsCounter] = openingTheDictionary()
+					else: 
+						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
+	return dictRewrited
+
+def dataWriting():
+		f = open('config', 'w')
+		calendarDataRewrited = openingTheDictionary(calendarData)
+		f.write(str(calendarDataRewrited))
+		f.close()
+
+class Target(object):
 
 	__slots__ = ('note', 'flag')
 
 	def __init__(self, text):
 		self.note = text
 		self.flag = False #по умолчанию создаваемая задача считается невыполненной
-
-	def dataWriting(self):
-		f = open('config', 'w')
-		f.write(str(calendarData))
-		f.close()
 
 	def edit(self):
 		self.note = input()#!!! перенести ввод в другое место, а тут уже получать имеющиеся данные
