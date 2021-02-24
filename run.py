@@ -1,18 +1,19 @@
 from datetime import date
 import ast
+import os
 
-#НЕ ЧИТАЙТЕ МОЙ КОД ПОЖАВСТА ОН НЕ ДОПИСАН <3
-f = open('config')
-k_str = f.read()
-calendarDataPrerewrited = ast.literal_eval(k_str)
-calendarData = openingTheDictionary(calendarDataPrerewrited)
+def new_config():
+	f = open('config','w')
+	f.close()
 
-#сделать проверку на существование файла 
-#и его создание, в случае, когда проверка не пройдена
-
-#при создании файла стоит не забывать, что если это пустой файл
-#без расширения, то стоит ожиджать ошибки
-#SyntaxError: unexpected EOF while parsing при попытке чтения
+def read_instructions(filename: str) -> None:
+	if os.path.isfilea(filename):
+		f = open(filename)
+		calendarDataPrerewrited = ast.literal_eval(k_str)
+		calendarData = openingTheDictionary(calendarDataPrerewrited)
+	else:
+		new_config()
+		calendarData = {}
 
 mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -129,6 +130,7 @@ class Target(object):
 
 
 if __name__ == '__main__':
+	read_instructions('config')
 	printCalendar()
 	questionForUser()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
