@@ -2,18 +2,29 @@ from datetime import date
 import ast
 import os
 
+import dateanalysis
+
 def new_config():
 	f = open('config','w')
 	f.close()
 
-def read_instructions(filename: str) -> None:
+def dataReading(filename: str) -> None:
 	if os.path.isfilea(filename):
 		f = open(filename)
 		calendarDataPrerewrited = ast.literal_eval(k_str)
 		calendarData = openingTheDictionary(calendarDataPrerewrited)
+		f.close()
 	else:
 		new_config()
 		calendarData = {}
+
+def dataWriting(filename: str):
+		f = open(filename, 'w')
+		calendarDataRewrited = openingTheDictionary(calendarData, opening)
+		f.write(str(calendarDataRewrited))
+		f.close()
+
+notifications = []
 
 mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -62,7 +73,7 @@ def inquery(number):
 	if number == 4:
 		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
 	if (number < 4):
-		dataWriting()
+		dataWriting('config')
 
 def questionForUser():
 	question = int(input("""what u want from me?
@@ -107,12 +118,6 @@ def dictHandler(someDict, opening = None):
 						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
 	return dictRewrited
 
-def dataWriting():
-		f = open('config', 'w')
-		calendarDataRewrited = openingTheDictionary(calendarData, opening)
-		f.write(str(calendarDataRewrited))
-		f.close()
-
 class Target(object):
 
 	__slots__ = ('note', 'flag')
@@ -130,7 +135,7 @@ class Target(object):
 
 
 if __name__ == '__main__':
-	read_instructions('config')
+	dataReading('config')
+	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 	printCalendar()
 	questionForUser()
-	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
