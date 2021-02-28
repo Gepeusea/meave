@@ -52,6 +52,7 @@ def checkUp(noteDay):
 		calendarData[noteDay[:4]].setdefault(noteDay[5:7], {})
 	if calendarData[noteDay[:4]][noteDay[5:7]].get(noteDay[8:]) == None:
 		calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(0)
 
 def inquery(number):
 	noteDay = input("on what day?")
@@ -62,14 +63,16 @@ def inquery(number):
 	if number == 2:
 		numb = int(input("what number of target?"))
 		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
-			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].changeFlag()
+			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].changeFlag()
+			if calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].flag = True:
+				calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][0] += 1
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
-		outputText = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1].note()
+		outputText = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].note()
 		noteText = input("last note: ", outputText)
-		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
-			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb-1] = Target(noteText)
+		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb:
+			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb] = Target(noteText)
 	if number == 4:
 		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
 	if (number < 4):
