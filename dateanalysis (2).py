@@ -1,39 +1,26 @@
 import datetime
 
 def pushFunction(text):
-	return([text, todaysDate, now.hour])
-
+	return([text, todaysDate, now.hour])        
+        
 def flagController(calendarData, daysInLastMonth, firstStart = None):
-	if firstStart:
-		global flag1, flag2, flag3, flag4
-		flag1 == True
-		flag2 == True
-		flag3 == True
-		flag4 == True
-	global now, todaysDate, taskDate1, taskDate2, taskDate3, taskDate4
-	now = datetime.datetime.now()
-	todaysDate = str(dateime.date.today())
-	unproductiveDay()
-	unproductiveWeek()
-	hightActivity()
-	outstandingTask()
-	if calculations(calendarData,daysInLastMonth, 1, True) = taskDate1[8:]:
-		flag1 = True
-	if calculations(calendarData,daysInLastMonth, 7, True) = taskDate2[8:]:
-		flag2 = True
-	if calculations(calendarData,daysInLastMonth, 7, True) = taskDate3[8:]:
-		flag3 = True
-	if calculations(calendarData,daysInLastMonth, 1, True) = taskDate4[8:]:
-		flag4 = True
-	
+        if firstStart:
+                global flag1, flag2, flag3, flag4
+                flag1 == True
+                flag2 == True
+                flag3 == True
+                flag4 == True
+        global now, todaysDate
+        now = datetime.datetime.now()
+        todaysDate = str(dateime.date.today())
 
 #выводит напоминание, если пользователь сегодня не выполнил ни одного задания
 def unproductiveDay(calendarData):
 	check = True
-	if int(now.hour) == 20 and flag1:      # TODO: delete int()
+	if now.hour == 20 and flag1:
 		if calendarData[todaysDate[:4]][todaysDate[5:7]][todaysDate[8:]][0] > 0:
 			check = False
-		if check:	
+		if check:
 			pushFunction('Сегодня вы не выполнили ни одной задачи, но еще не поздно это изменить')
 			flag1 == False
 
@@ -42,7 +29,7 @@ def calculations(calendarData,daysInLastMonth,counter, returnNumber = None):
 	if attempt < 1:
 		attempt = daysInLastMonth + attempt
 	if returnNumber:
-		return attempt
+                return attempt
 	attempt = calendarData[todaysDate[:4]][todaysDate[5:7]][str(attempt)]
 	elif attempt < 10:
 		attempt = calendarData[todaysDate[:4]][todaysDate[5:7]]['0'+str(attempt)]
@@ -51,7 +38,7 @@ def calculations(calendarData,daysInLastMonth,counter, returnNumber = None):
 #выводит напоминание в случае, если всю последнюю неделю пользователь был непродуктивен
 def unproductiveWeek(calendarData,daysInLastMonth):
 	check = True
-	if int(now.hour) == 12 and flag2:
+	if now.hour == 12 and flag2:
 		for i in range(7):
 			if (calculations(calendarData,daysInLastMonth,i)[0]) > 3:
 				check = False
@@ -62,7 +49,7 @@ def unproductiveWeek(calendarData,daysInLastMonth):
 #выводит напоминание когда пользователь поддерживает высокую продуктивность в течение долгого периода
 def hightActivity(calendarData,daysInLastMonth):
 	check = True
-	if int(now.hour) == 12 and flag3:
+	if now.hour == 12 and flag3:
 		for i in range(7):
 			if (calculations((calendarData,daysInLastMonth,i)+1)[0]) < 4:
 				check = False
@@ -71,9 +58,9 @@ def hightActivity(calendarData,daysInLastMonth):
 			flag3 == False
 
 #напоминание о невыполненных задачах
-def outstandingTask(calendarData,daysInLastMonth
-		check = False
-	if int(now.hour) == 10 and flag4:
-		if (calculations(calendarData,daysInLastMonth,1)[0]) < len(calendarData,daysInLastMonth,1):
+def outstandingTask(calendarData,daysInLastMonth):
+	check = False
+	if now.hour == 10 and flag4:
+		if (calculations(calendarData,daysInLastMonth,1)[0]) < len(calendarData,daysInLastMonth,1, True):
 			pushFunction('У вас есть невыполненные задачи за прошлый день, но вы можете расправиться с ними сегодня')
 			flag4 == False
