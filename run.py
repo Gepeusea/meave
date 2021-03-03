@@ -33,7 +33,7 @@ todaysDate = date.today()
 daysInThisMonth = 0
 yearNumber = str(todaysDate)[:4]
 monthNumber = str(todaysDate)[5:7]
-dayNumder = str(todaysDate)[8:] 
+dayNumder = str(todaysDate)[8:]
 order = date(int(yearNumber), int(monthNumber), 1).weekday()
 
 def daysInMonth(year, month):
@@ -142,3 +142,11 @@ if __name__ == '__main__':
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 	printCalendar()
 	questionForUser()
+	dateanalysisWorkResults = dateanalysis.flagController(calendarData, daysInLastMonth, 0, 0, 0, 0, True)
+	if dateanalysisWorkResults[0] != None:
+		notifications.append(dateanalysisWorkResults[0])
+	exit = False
+	while not exit:
+		dateanalysisWorkResults = dateanalysis.flagController(calendarData, daysInLastMonth, dateanalysisWorkResults[1], dateanalysisWorkResults[2], dateanalysisWorkResults[3], dateanalysisWorkResults[4])
+		if newNotification != None:
+			notifications.append(newNotification)

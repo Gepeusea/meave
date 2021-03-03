@@ -13,11 +13,11 @@ def flagController(calendarData, daysInLastMonth, firstStart = None):
 	global now, todaysDate, calendarData
 	now = datetime.datetime.now()
 	todaysDate = str(dateime.date.today())
-	nofication = unproductiveDay()
-	nofication = unproductiveWeek()
-	nofication = hightActivity()
-	nofication = outstandingTask()
-	return nofication
+	notification = unproductiveDay()
+	notification = unproductiveWeek()
+	notification = hightActivity()
+	notification = outstandingTask()
+	return notification
 
 #выводит напоминание, если пользователь сегодня не выполнил ни одного задания
 def unproductiveDay():
