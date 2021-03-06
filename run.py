@@ -142,11 +142,9 @@ if __name__ == '__main__':
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 	printCalendar()
 	questionForUser()
-	dateanalysisWorkResults = dateanalysis.flagController(calendarData, daysInLastMonth, 0, 0, 0, 0, True)
-	if dateanalysisWorkResults[0] != None:
-		notifications.append(dateanalysisWorkResults[0])
 	exit = False
 	while not exit:
-		dateanalysisWorkResults = dateanalysis.flagController(calendarData, daysInLastMonth, dateanalysisWorkResults[1], dateanalysisWorkResults[2], dateanalysisWorkResults[3], dateanalysisWorkResults[4])
-		if newNotification != None:
-			notifications.append(newNotification)
+		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData, daysInLastMonth)
+		if dateanalysisWorkResults != None:
+			notifications.append(dateanalysisWorkResults)
+		exit = True
