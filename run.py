@@ -24,19 +24,8 @@ def dataWriting(filename: str):
 		f.write(str(calendarDataRewrited))
 		f.close()
 
-notifications = []
-
-mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-#correct date filling is 2021-02-28
-todaysDate = date.today()
-daysInThisMonth = 0
-yearNumber = str(todaysDate)[:4]
-monthNumber = str(todaysDate)[5:7]
-dayNumder = str(todaysDate)[8:]
-order = date(int(yearNumber), int(monthNumber), 1).weekday()
-
 def daysInMonth(year, month):
+	mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 	if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
 		isYearLeap = True
 	else: isYearLeap = False
@@ -138,13 +127,25 @@ class Target(object):
 
 
 if __name__ == '__main__':
+	
 	dataReading('config')
+
+	todaysDate = date.today()
+	daysInThisMonth = 0
+	yearNumber = str(todaysDate)[:4]
+	monthNumber = str(todaysDate)[5:7]
+	dayNumder = str(todaysDate)[8:]
+	order = date(int(yearNumber), int(monthNumber), 1).weekday()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
+
 	printCalendar()
 	questionForUser()
+
+	notifications = []
 	exit = False
 	while not exit:
-		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData, daysInLastMonth)
+		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData,
+			daysInMonth(yearNumber, int(monthNumber)-1))
 		if dateanalysisWorkResults != None:
 			notifications.append(dateanalysisWorkResults)
 		exit = True

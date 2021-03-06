@@ -1,18 +1,15 @@
 import datetime
 
-#def pushFunction(text):
-#	return([text, todaysDate, now.hour])
-
 class Notification:
 
 	def __init__(self, todaysDate, calendarData, daysInLastMonth):
 		self.todaysDate = str(todaysDate)
 		self.calendarData = calendarData
 		self.daysInLastMonth = daysInLastMonth
-		self.taskDate1 = todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 1, True))
-		self.taskDate2 = todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 7, True))
-		self.taskDate3 = todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 7, True))
-		self.taskDate4 = todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 1, True))
+		self.taskDate1 = self.todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 1, True))
+		self.taskDate2 = self.todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 7, True))
+		self.taskDate3 = self.todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 7, True))
+		self.taskDate4 = self.todaysDate[:8] + str(calculations(calendarData,daysInLastMonth, 1, True))
 		controller()
 
 	def controller(self):
@@ -29,8 +26,7 @@ class Notification:
 		if (self.now.hour == 20) and (calculations(1, True) == self.taskDate1[8:]):
 			if self.calendarData[self.todaysDate[:4]][self.todaysDate[5:7]][self.todaysDate[8:]][0] > 0:
 				check = False
-			if check:	
-				#pushFunction('Сегодня вы не выполнили ни одной задачи, но еще не поздно это изменить')
+			if check:
 				self.taskDate1 = self.todaysDate[:8] + str(calculations(1, True))
 				return(['Сегодня вы не выполнили ни одной задачи, но еще не поздно это изменить',
 					self.todaysDate, self.now.hour])
@@ -54,7 +50,6 @@ class Notification:
 				if (calculations(i)[0]) > 3:
 					check = False
 			if check:
-				#pushFunction('На этой неделе у вас наблюдалась низкая продуктивность, давайте исправим это сегодня')
 				self.taskDate2 = self.todaysDate[:8] + str(calculations(1, True))
 				return(['На этой неделе у вас наблюдалась низкая продуктивность, давайте исправим это сегодня',
 					self.todaysDate, self.now.hour])
@@ -67,7 +62,6 @@ class Notification:
 				if (calculations((i)+1)[0]) < 4:
 					check = False
 			if check:
-				#pushFunction('Последнюю неделю вы предерживались режима высокой продуктивности. Что думаете на счет разгрузочного дня?')
 				self.taskDate3 = self.todaysDate[:8] + str(calculations(1, True))
 				return(['Последнюю неделю вы предерживались режима высокой продуктивности. Что думаете на счет разгрузочного дня?',
 					self.todaysDate, self.now.hour])
@@ -76,7 +70,6 @@ class Notification:
 	def outstandingTask(daysInLastMonth):
 		if self.now.hour == 10 and (calculations(1, True) == self.taskDate4[8:]):
 			if (calculations(1)[0]) < len(calculations(1)):
-				#pushFunction('У вас есть невыполненные задачи за прошлый день, но вы можете расправиться с ними сегодня')
 				self.taskDate4 = self.todaysDate[:8] + str(calculations(1, True))
 				return(['У вас есть невыполненные задачи за прошлый день, но вы можете расправиться с ними сегодня',
 					self.todaysDate, self.now.hour])
