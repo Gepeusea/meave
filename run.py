@@ -4,26 +4,30 @@ import os
 
 import dateanalysis
 
+# файл будет автоматически создан при попытке его открытия
 def new_config():
 	f = open('config','w')
 	f.close()
 
+# чтение файла с данными пользователя и запись его содержимого в словарь
 def dataReading(filename: str) -> None:
 	if os.path.isfilea(filename):
 		f = open(filename)
 		calendarDataPrerewrited = ast.literal_eval(k_str)
-		calendarData = openingTheDictionary(calendarDataPrerewrited)
-		f.close()
+		calendarData = dictHandler(calendarDataPrerewrited)
++		f.close()
 	else:
 		new_config()
 		calendarData = {}
 
+# запись данных пользователя в файл
 def dataWriting(filename: str):
 		f = open(filename, 'w')
-		calendarDataRewrited = openingTheDictionary(calendarData, opening)
+		calendarDataRewrited = dictHandler(calendarData, opening)
 		f.write(str(calendarDataRewrited))
 		f.close()
 
+# определяет количество дней в месяце (с учетом високосного года)
 def daysInMonth(year, month):
 	mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 	if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
@@ -34,6 +38,15 @@ def daysInMonth(year, month):
 		daysamt += 1
 	return daysamt
 
+# определяет номер предыдущего месяца (с учетом того, что им может оказаться декабрь)
+def LastMonth(year, month):
+	if (int(month)-1) = 0:
+		month = 12
+		year = year - 1
+	return [year, month]
+
+# проверка на наличие нужной ячейки в структуре
+# создание ячейки в случае ее отсутствия
 def checkUp(noteDay):
 	if calendarData.get(noteDay[:4]) == None:
 		calendarData.setdefault(noteDay[:4], {})
@@ -76,15 +89,12 @@ def questionForUser():
 		"""))
 	inquery(question)
 
-def ConcretDayDate(ThatDay):
-	s = str(todaysDate)[:8] + str(ThatDay)
-	return s
-
 def printCalendar(): 
 	pass
 
 def dictHandler(someDict, opening = None):
-	#т.е. False по умолчанию
+	# т.е. False по умолчанию и если аргумент opening не указан, то происходит
+	# упаковка данных массива в словарь, иначе распаковка словаря
 
 	def openingTheTarget():
 		openNote = someDict[i1][i2][i3][elemsCounter].note
@@ -127,7 +137,7 @@ class Target(object):
 
 
 if __name__ == '__main__':
-	
+
 	dataReading('config')
 
 	todaysDate = date.today()
@@ -145,7 +155,7 @@ if __name__ == '__main__':
 	exit = False
 	while not exit:
 		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData,
-			daysInMonth(yearNumber, int(monthNumber)-1))
+			daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1])
 		if dateanalysisWorkResults != None:
 			notifications.append(dateanalysisWorkResults)
 		exit = True
