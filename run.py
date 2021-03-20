@@ -4,21 +4,61 @@ import os
 
 import dateanalysis
 
+def dictHandler(someDict, opening = None):
+	# т.е. False по умолчанию и если аргумент opening не указан, то происходит
+	# упаковка данных массива в словарь, иначе распаковка словаря
+
+	def openingTheTarget():
+		openNote = someDict[i1][i2][i3][elemsCounter].note
+		openFlag = someDict[i1][i2][i3][elemsCounter].flag
+		return [openNote, openFlag]
+
+	def closingTheTarget():
+		closeNote = someDict[i1][i2][i3][elemsCounter][0]
+		closeFlag = someDict[i1][i2][i3][elemsCounter][1]
+		newExemplar = Target(closeNote)
+		if newExemplar.flag != closeFlag:
+			newExemplar.changeFlag()
+		return newExemplar
+
+	dictRewrited = someDict.copy() 
+	for i1, j1 in someDict.items():
+		for i2, j2 in someDict[i1].items():
+			for i3, j3 in someDict[i1][i2].items():
+				for elemsCounter in range(len(someDict[i1][i2][i3])):
+					if opening:
+						dictRewrited[i1][i2][i3][elemsCounter] = openingTheDictionary()
+					else: 
+						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
+	return dictRewrited
+
 # файл будет автоматически создан при попытке его открытия
-def new_config():
-	f = open('config','w')
-	f.close()
+def new_config(name):
+	f1 = open(name1,'w')
+	f2 = open(name2,'w')
+	f1.close()
+	f2.close()
 
 # чтение файла с данными пользователя и запись его содержимого в словарь
-def dataReading(filename: str) -> None:
-	if os.path.isfilea(filename):
-		f = open(filename)
-		calendarDataPrerewrited = ast.literal_eval(k_str)
+def dataReading(filename1: str, filename1: str) -> None:
+	if os.path.isfilea(filename1) and os.path.isfilea(filename2) and os.path.isfilea(filename3):
+		f1 = open(filename1)
+		f2 = open(filename2)
+		k_str1 = f1.read()
+		k_str2 = f2.read()
+		calendarDataPrerewrited = ast.literal_eval(k_str1)
 		calendarData = dictHandler(calendarDataPrerewrited)
-+		f.close()
+		notifications = ast.literal_eval(k_str2)
+		for i in range(4):
+			if notifications[i] != None:
+				dateOfLastAnswer[i] = notifications[i[1]]
+		f1.close()
+		f2.close()
 	else:
-		new_config()
+		new_config('config')
 		calendarData = {}
+		notifications = [None, None, None, None]
+		dateOfLastAnswer = [0, 0, 0, 0]
 
 # запись данных пользователя в файл
 def dataWriting(filename: str):
@@ -68,6 +108,7 @@ def inquery(number):
 			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].changeFlag()
 			if calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].flag = True:
 				calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][0] += 1
+			else: calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][0] -= 1
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
@@ -92,34 +133,6 @@ def questionForUser():
 def printCalendar(): 
 	pass
 
-def dictHandler(someDict, opening = None):
-	# т.е. False по умолчанию и если аргумент opening не указан, то происходит
-	# упаковка данных массива в словарь, иначе распаковка словаря
-
-	def openingTheTarget():
-		openNote = someDict[i1][i2][i3][elemsCounter].note
-		openFlag = someDict[i1][i2][i3][elemsCounter].flag
-		return [openNote, openFlag]
-
-	def closingTheTarget():
-		closeNote = someDict[i1][i2][i3][elemsCounter][0]
-		closeFlag = someDict[i1][i2][i3][elemsCounter][1]
-		newExemplar = Target(closeNote)
-		if newExemplar.flag != closeFlag:
-			newExemplar.changeFlag()
-		return newExemplar
-
-	dictRewrited = someDict.copy() 
-	for i1, j1 in someDict.items():
-		for i2, j2 in someDict[i1].items():
-			for i3, j3 in someDict[i1][i2].items():
-				for elemsCounter in range(len(someDict[i1][i2][i3])):
-					if opening:
-						dictRewrited[i1][i2][i3][elemsCounter] = openingTheDictionary()
-					else: 
-						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
-	return dictRewrited
-
 class Target(object):
 
 	__slots__ = ('note', 'flag')
@@ -134,7 +147,6 @@ class Target(object):
 
 	def changeFlag(self):
 		self.flag = not self.flag
-
 
 if __name__ == '__main__':
 
@@ -151,11 +163,13 @@ if __name__ == '__main__':
 	printCalendar()
 	questionForUser()
 
-	notifications = []
 	exit = False
-	while not exit:
+	while not exit1:
 		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData,
-			daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1])
-		if dateanalysisWorkResults != None:
-			notifications.append(dateanalysisWorkResults)
-		exit = True
+			daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
+		while not exit2:
+			dateanalysisWorkResults = dateanalysis.controller()
+			if dateanalysisWorkResults != None:
+				notifications.append(dateanalysisWorkResults)
+				dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
+		exit1 = True
