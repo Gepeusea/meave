@@ -22,7 +22,7 @@ def dictHandler(someDict, opening = None):
 		return newExemplar
 
 	dictRewrited = someDict.copy() 
-	for i1, j1 in someDict.items():
+	for i1, j1 in someDict.items
 		for i2, j2 in someDict[i1].items():
 			for i3, j3 in someDict[i1][i2].items():
 				for elemsCounter in range(len(someDict[i1][i2][i3])):
@@ -101,7 +101,8 @@ def inquery(number):
 	checkUp(noteDay)
 	if number == 1:
 		noteText = input("what u want to write in this cell")
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(Target(noteText))
+		noteGrade = int(input("how difficult is it?"))
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(Target(noteText, noteGrade))
 	if number == 2:
 		numb = int(input("what number of target?"))
 		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
@@ -125,9 +126,11 @@ def questionForUser():
 	question = int(input("""what u want from me?
 		1 - new target
 		2 - watch targets on this day
-		3 - edit target
-		4 - change status of target
+		3 - edit target text
+		4 - edit target text
+		5 - change status of target
 		"""))
+	#6 - delete target
 	inquery(question)
 
 def printCalendar(): 
@@ -137,13 +140,17 @@ class Target(object):
 
 	__slots__ = ('note', 'flag')
 
-	def __init__(self, text):
+	def __init__(self, text, numeric):
 		self.note = text
+		self.grade = numeric
 		self.flag = False #по умолчанию создаваемая задача считается невыполненной
 
-	def edit(self):
+	def editText(self):
 		self.note = input()#!!! перенести ввод в другое место, а тут уже получать имеющиеся данные
 		#необходимо сделать, чтобы это поле оставалось заполненным предыдущими данными в момент редактирования
+
+	def editGrade(self):
+		self.grade = int(input())#!!! перенести ввод в другое место, а тут уже получать имеющиеся данные
 
 	def changeFlag(self):
 		self.flag = not self.flag
@@ -168,8 +175,8 @@ if __name__ == '__main__':
 		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData,
 			daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
 		while not exit2:
-			dateanalysisWorkResults = dateanalysis.controller()
+			dateanalysisWorkResults = dateanalysis.controller(dateOfLastAnswer)
 			if dateanalysisWorkResults != None:
-				notifications.append(dateanalysisWorkResults)
+				notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
 				dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
 		exit1 = True
