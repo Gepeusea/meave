@@ -32,40 +32,53 @@ def dictHandler(someDict, opening = None):
 						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
 	return dictRewrited
 
-# файл будет автоматически создан при попытке его открытия
-def new_config(name):
-	f1 = open(name1,'w')
-	f2 = open(name2,'w')
-	f1.close()
-	f2.close()
+def questionToTheUsersAssessment():
+	print("""
+		Предположим, вы поставили себе 10 равнозначных задач.
+		Какое количество из них вам бы достаточно было выполнить...
+		""")
+	usersGrades.append(input("чтобы показать удовлетворительный результат?"))
+	usersGrades.append(input("чтобы показать хороший результат?"))
+	usersGrades.append(input("чтобы показать отличный результат?"))
+	dataWriting('usersGradesConfig', 3)
 
 # чтение файла с данными пользователя и запись его содержимого в словарь
-def dataReading(filename1: str, filename1: str) -> None:
+def dataReading(filename1: str, filename2: str, filename3: str) -> None:
 	if os.path.isfilea(filename1) and os.path.isfilea(filename2) and os.path.isfilea(filename3):
 		f1 = open(filename1)
 		f2 = open(filename2)
+		f3 = open(filename3)
 		k_str1 = f1.read()
 		k_str2 = f2.read()
+		k_str3 = f3.read()
 		calendarDataPrerewrited = ast.literal_eval(k_str1)
 		calendarData = dictHandler(calendarDataPrerewrited)
 		notifications = ast.literal_eval(k_str2)
+		usersGrades = ast.literal_eval(k_str3)
 		for i in range(4):
 			if notifications[i] != None:
 				dateOfLastAnswer[i] = notifications[i[1]]
 		f1.close()
 		f2.close()
+		f3.close()
 	else:
-		new_config('config')
 		calendarData = {}
 		notifications = [None, None, None, None]
-		dateOfLastAnswer = [0, 0, 0, 0]
+		dateOfLastAnswer = notifications
+		questionToTheUsersAssessment()
 
 # запись данных пользователя в файл
-def dataWriting(filename: str):
-		f = open(filename, 'w')
-		calendarDataRewrited = dictHandler(calendarData, opening)
-		f.write(str(calendarDataRewrited))
-		f.close()
+def dataWriting(filename: str, number):
+	# даже при первом запуске ошибки не будет,
+	# т.к. файл будет автоматически создан при попытке его открытия
+	f = open(filename, 'w')
+	case_operator = {
+		'1': calendarDataRewrited = dictHandler(calendarData, opening)
+			f.write(str(calendarDataRewrited))
+		'2': f.write(str(notifications))
+		'3': f.write(str())
+	}
+	f.close()
 
 # определяет количество дней в месяце (с учетом високосного года)
 def daysInMonth(year, month):
@@ -94,42 +107,47 @@ def checkUp(noteDay):
 		calendarData[noteDay[:4]].setdefault(noteDay[5:7], {})
 	if calendarData[noteDay[:4]][noteDay[5:7]].get(noteDay[8:]) == None:
 		calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(0)
+		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append([0,0])
 
 def inquery(number):
 	noteDay = input("on what day?")
 	checkUp(noteDay)
+	cData = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
 	if number == 1:
 		noteText = input("what u want to write in this cell")
 		noteGrade = int(input("how difficult is it?"))
-		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append(Target(noteText, noteGrade))
+		cData.append(Target(noteText, noteGrade))
+		cData[0][1] += cData[numb].grade()
 	if number == 2:
 		numb = int(input("what number of target?"))
-		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb-1:
-			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].changeFlag()
-			if calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].flag = True:
-				calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][0] += 1
-			else: calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][0] -= 1
+		if len(cData) >= numb-1:
+			cData[numb].changeFlag()
+			if cData[numb].flag = True:
+				cData[0] += cData[numb].grade()
+			else: cData[0] -= cData[numb].grade()
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
-		outputText = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb].note()
+		outputText = cData[numb].note()
 		noteText = input("last note: ", outputText)
-		if len(calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]) >= numb:
-			calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]][numb] = Target(noteText)
+		if len(cData) >= numb:
+			cData[numb] = Target(noteText)
 	if number == 4:
-		return calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
-	if (number < 4):
-		dataWriting('config')
+		pass
+	if number == 5:
+		return cData
+	if (number < 5):
+		dataWriting('dataConfig', '1')
 
 def questionForUser():
 	question = int(input("""what u want from me?
 		1 - new target
-		2 - watch targets on this day
+		2 - change status of target
 		3 - edit target text
-		4 - edit target text
-		5 - change status of target
+		4 - edit target grade
+		5 - watch targets on this day
 		"""))
+	#watch targets on this day
 	#6 - delete target
 	inquery(question)
 
@@ -147,7 +165,7 @@ class Target(object):
 
 	def editText(self):
 		self.note = input()#!!! перенести ввод в другое место, а тут уже получать имеющиеся данные
-		#необходимо сделать, чтобы это поле оставалось заполненным предыдущими данными в момент редактирования
+		# необходимо сделать, чтобы это поле оставалось заполненным предыдущими данными в момент редактирования
 
 	def editGrade(self):
 		self.grade = int(input())#!!! перенести ввод в другое место, а тут уже получать имеющиеся данные
@@ -157,7 +175,7 @@ class Target(object):
 
 if __name__ == '__main__':
 
-	dataReading('config')
+	dataReading('dataConfig', 'notificationsConfig', 'usersGradesConfig')
 
 	todaysDate = date.today()
 	daysInThisMonth = 0
@@ -170,13 +188,12 @@ if __name__ == '__main__':
 	printCalendar()
 	questionForUser()
 
-	exit = False
-	while not exit1:
-		dateanalysisWorkResults = dateanalysis.Notification(todaysDate, calendarData,
-			daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
-		while not exit2:
-			dateanalysisWorkResults = dateanalysis.controller(dateOfLastAnswer)
-			if dateanalysisWorkResults != None:
-				notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
-				dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
-		exit1 = True
+	
+	specimenOfDateAnalysis = dateanalysis.Notification(todaysDate, calendarData, usersGrades[1], 
+		daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
+	for i in range(4):
+		dateanalysisWorkResults = exemplarOfDateAnalysis.controller(dateOfLastAnswer)
+		if dateanalysisWorkResults != None:
+			notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
+			dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
+			dataWriting('notificationsConfig', '2')
