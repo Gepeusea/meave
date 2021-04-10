@@ -20,7 +20,7 @@ class Notification:
 	def unproductiveDay(self):
 		if (self.now.hour > 20) and (taskDates[0] == None or (calculations(1, True) == self.taskDates[0][8:])):
 			check = True
-			if self.calendarData[self.todaysDate[:4]][self.todaysDate[5:7]][self.todaysDate[8:]][0] > 0:
+			if self.calendarData[self.todaysDate[:4]][self.todaysDate[5:7]][self.todaysDate[8:]][0][0] > 0:
 				check = False
 			if check:
 				self.taskDates[0] = self.todaysDate[:8] + str(calculations(1, True))
@@ -52,7 +52,7 @@ class Notification:
 		if (self.now.hour > 12) and (taskDates[1] == None or (calculations(7, True) == self.taskDates[1][8:])):
 			check = True
 			for i in range(7):
-				if (calculations(i)[0]) > (userGrade - 1):
+				if ((calculations(i)[0][0])/(calculations(i)[0][1])) > (userGrade - 0,0001):
 					check = False
 			if check:
 				self.taskDates[1] = self.todaysDate[:8] + str(calculations(1, True))
@@ -64,7 +64,7 @@ class Notification:
 		if (self.now.hour > 12) and (taskDatees[2] == None or (calculations(7, True) == self.taskDates[2][8:])):
 			check = True
 			for i in range(7):
-				if (calculations((i)+1)[0]) < userGrade:
+				if ((calculations(i+1)[0][0])/(calculations(i+1)[0][1])) < userGrade:
 					check = False
 			if check:
 				self.taskDates[2] = self.todaysDate[:8] + str(calculations(1, True))
@@ -74,7 +74,7 @@ class Notification:
 	# напоминание о невыполненных задачах
 	def outstandingTask(daysInLastMonth):
 		if (self.now.hour > 10) and (taskDates[3] == None or (calculations(1, True) == self.taskDates[3][8:])):
-			if (calculations(1)[0]) < len(calculations(1)):
+			if (calculations(1)[0][0]) < (calculations(1)[0][1]):
 				self.taskDates[3] = self.todaysDate[:8] + str(calculations(1, True))
 				return(['У вас есть невыполненные задачи за прошлый день, но вы можете расправиться с ними сегодня',
 					3, self.todaysDate, self.now.hour])

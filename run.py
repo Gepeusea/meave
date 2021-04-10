@@ -37,9 +37,9 @@ def questionToTheUsersAssessment():
 		Предположим, вы поставили себе 10 равнозначных задач.
 		Какое количество из них вам бы достаточно было выполнить...
 		""")
-	usersGrades.append(input("чтобы показать удовлетворительный результат?"))
-	usersGrades.append(input("чтобы показать хороший результат?"))
-	usersGrades.append(input("чтобы показать отличный результат?"))
+	usersGrades.append(int(input("чтобы показать удовлетворительный результат?"))/10)
+	usersGrades.append(int(input("чтобы показать хороший результат?"))/10)
+	usersGrades.append(int(input("чтобы показать отличный результат?"))/10)
 	dataWriting('usersGradesConfig', 3)
 
 # чтение файла с данными пользователя и запись его содержимого в словарь
@@ -56,8 +56,7 @@ def dataReading(filename1: str, filename2: str, filename3: str) -> None:
 		notifications = ast.literal_eval(k_str2)
 		usersGrades = ast.literal_eval(k_str3)
 		for i in range(4):
-			if notifications[i] != None:
-				dateOfLastAnswer[i] = notifications[i[1]]
+			dateOfLastAnswer[i] = notifications[i[1]]
 		f1.close()
 		f2.close()
 		f3.close()
@@ -72,12 +71,11 @@ def dataWriting(filename: str, number):
 	# даже при первом запуске ошибки не будет,
 	# т.к. файл будет автоматически создан при попытке его открытия
 	f = open(filename, 'w')
-	case_operator = {
-		'1': calendarDataRewrited = dictHandler(calendarData, opening)
-			f.write(str(calendarDataRewrited))
-		'2': f.write(str(notifications))
-		'3': f.write(str())
-	}
+	if number == 1: 
+		calendarDataRewrited = dictHandler(calendarData, opening)
+		f.write(str(calendarDataRewrited))
+	elif number == 2: f.write(str(notifications))
+	elif number == 3: f.write(str(usersGrades))
 	f.close()
 
 # определяет количество дней в месяце (с учетом високосного года)
@@ -151,8 +149,23 @@ def questionForUser():
 	#6 - delete target
 	inquery(question)
 
-def printCalendar(): 
-	pass
+def dayColor(fullDaysDate):
+	numberOfTargets = calendarData[fullDaysDate[:4]][fullDaysDate[5:7]][fullDaysDate[8:]][0]
+	ratio = numberOfTargets[0] / numberOfTargets[1]
+	return {
+		ratio <= usersGrades[0] : 0,
+		usersGrades[0] <= ratio < usersGrades[1] : 1,
+		usersGrades[1] <= ratio < usersGrades[2] : 2,
+		usersGrades[2] <= ratio : 3
+	}[True]
+	# заменить значиния словаря на номера цветов
+
+def printCalendar(todaysDate): 
+	daysColors = []
+	if ([todaysDate[:4]] in calendarData) and ([todaysDate[5:7]] in calendarData[todaysDate[:4]]):
+		for key in calendarData[todaysDate[:4]][todaysDate[5:7]]:
+			daysColors.append(dayColor(calendarData[todaysDate[:4]][todaysDate[5:7]][key]))
+	return daysColors
 
 class Target(object):
 
@@ -185,10 +198,9 @@ if __name__ == '__main__':
 	order = date(int(yearNumber), int(monthNumber), 1).weekday()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 
-	printCalendar()
+	daysColors = printCalendar(daysInThisMonth)
 	questionForUser()
 
-	
 	specimenOfDateAnalysis = dateanalysis.Notification(todaysDate, calendarData, usersGrades[1], 
 		daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
 	for i in range(4):
