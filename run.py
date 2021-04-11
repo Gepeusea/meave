@@ -4,6 +4,7 @@ import os
 
 import dateanalysis
 
+
 def dictHandler(someDict, opening = None):
 	# т.е. False по умолчанию и если аргумент opening не указан, то происходит
 	# упаковка данных массива в словарь, иначе распаковка словаря
@@ -34,6 +35,7 @@ def dictHandler(someDict, opening = None):
 						dictRewrited[i1][i2][i3][elemsCounter] = closingTheDictionary()
 	return dictRewrited
 
+
 def questionToTheUsersAssessment():
 	print("""
 		Предположим, вы поставили себе 10 равнозначных задач.
@@ -43,6 +45,7 @@ def questionToTheUsersAssessment():
 	usersGrades.append(int(input("чтобы показать хороший результат?"))/10)
 	usersGrades.append(int(input("чтобы показать отличный результат?"))/10)
 	dataWriting('usersGradesConfig', 3)
+
 
 # чтение файла с данными пользователя и запись его содержимого в словарь
 def dataReading(filename1: str, filename2: str, filename3: str) -> None:
@@ -68,6 +71,7 @@ def dataReading(filename1: str, filename2: str, filename3: str) -> None:
 		dateOfLastAnswer = [None, None, None, None]
 		questionToTheUsersAssessment()
 
+
 # запись данных пользователя в файл
 def dataWriting(filename: str, number):
 	# даже при первом запуске ошибки не будет,
@@ -80,6 +84,7 @@ def dataWriting(filename: str, number):
 	elif number == 3: f.write(str(usersGrades))
 	f.close()
 
+
 # определяет количество дней в месяце (с учетом високосного года)
 def daysInMonth(year, month):
 	mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -87,9 +92,10 @@ def daysInMonth(year, month):
 		isYearLeap = True
 	else: isYearLeap = False
 	daysamt = mdays[month-1]
-	if (month == February and isYearLeap):
+	if (month == 2 and isYearLeap):
 		daysamt += 1
 	return daysamt
+
 
 # определяет номер предыдущего месяца (с учетом того, что им может оказаться декабрь)
 def LastMonth(year, month):
@@ -97,6 +103,7 @@ def LastMonth(year, month):
 		month = 12
 		year = year - 1
 	return [year, month]
+
 
 # проверка на наличие нужной ячейки в структуре
 # создание ячейки в случае ее отсутствия
@@ -109,6 +116,7 @@ def checkUp(noteDay):
 		calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
 		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append([0,0])
 
+
 def dayColor(fullDaysDate):
 	numberOfTargets = calendarData[fullDaysDate[:4]][fullDaysDate[5:7]][fullDaysDate[8:]][0]
 	ratio = numberOfTargets[0] / numberOfTargets[1]
@@ -120,12 +128,14 @@ def dayColor(fullDaysDate):
 	}[True]
 	# заменить значиния словаря на номера цветов
 
+
 def printCalendar(chosenDate): 
 	daysColors = []
 	if ([todaysDate[:4]] in calendarData) and ([todaysDate[5:7]] in calendarData[todaysDate[:4]]):
 		for key in calendarData[todaysDate[:4]][todaysDate[5:7]]:
 			daysColors.append(dayColor(calendarData[todaysDate[:4]][todaysDate[5:7]][key]))
 	return daysColors
+
 
 def analyse():
 	specimenOfDateAnalysis = dateanalysis.Notification(todaysDate, calendarData, usersGrades[1], 
@@ -137,15 +147,18 @@ def analyse():
 			dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
 			dataWriting('notificationsConfig', '2')
 
+
 def inquery(number):
 	noteDay = input("on what day?")
 	checkUp(noteDay)
 	cData = calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]]
+
 	if number == 1:
 		noteText = input("what u want to write in this cell")
 		noteGrade = int(input("how difficult is it?"))
 		cData.append(Target(noteText, noteGrade))
 		cData[0][1] += cData[numb].grade()
+
 	if number == 2:
 		numb = int(input("what number of target?"))
 		if len(cData) >= numb-1:
@@ -154,6 +167,7 @@ def inquery(number):
 				cData[0] += cData[numb].grade()
 			else: cData[0] -= cData[numb].grade()
 			daysColors = printCalendar(noteDay)
+
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
@@ -165,19 +179,24 @@ def inquery(number):
 		noteFlag = cData[numb].flag()
 		cData[numb] = Target(noteText, noteGrade)
 		cData[numb].flag() = noteFlag
+
 	if number == 4:
 		numb = int(input("what number of target?"))
 		if len(cData) >= numb-1:
 			cData[numb].pop(numb-1)
+
 	if number == 5:
 		numb = int(input("what number of notification?"))
 		if len() >= numb-1:
 			notifications.pop(numb-1)
 			dataWriting('notificationsConfig', '2')
+
 	if number == 6:
 		return cData
+
 	if (number < 5):
 		dataWriting('dataConfig', '1')
+
 
 def questionForUser():
 	question = int(input("""what u want from me?
@@ -188,9 +207,8 @@ def questionForUser():
 		5 - delete notification
 		6 - watch targets on this day
 		"""))
-	#watch targets on this day
-	#6 - delete target
 	inquery(question)
+
 
 class Target(object):
 
@@ -211,16 +229,16 @@ class Target(object):
 	def changeFlag(self):
 		self.flag = not self.flag
 
+
 if __name__ == '__main__':
 
 	dataReading('dataConfig', 'notificationsConfig', 'usersGradesConfig')
 
-	todaysDate = date.today()
-	daysInThisMonth = 0
-	yearNumber = str(todaysDate)[:4]
-	monthNumber = str(todaysDate)[5:7]
-	dayNumder = str(todaysDate)[8:]
-	order = date(int(yearNumber), int(monthNumber), 1).weekday()
+	todaysDate = str(date.today())
+	yearNumber = int((todaysDate)[:4])
+	monthNumber = int((todaysDate)[5:7])
+	dayNumder = int((todaysDate)[8:])
+	order = date(yearNumber, monthNumber, 1).weekday()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 
 	analyse()
