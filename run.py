@@ -64,8 +64,8 @@ def dataReading(filename1: str, filename2: str, filename3: str) -> None:
 		f3.close()
 	else:
 		calendarData = {}
-		notifications = [None, None, None, None]
-		dateOfLastAnswer = notifications
+		notifications = []
+		dateOfLastAnswer = [None, None, None, None]
 		questionToTheUsersAssessment()
 
 # запись данных пользователя в файл
@@ -133,7 +133,7 @@ def analyse():
 	for i in range(4):
 		dateanalysisWorkResults = exemplarOfDateAnalysis.controller(dateOfLastAnswer)
 		if dateanalysisWorkResults != None:
-			notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
+			notifications.append(dateanalysisWorkResults)
 			dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
 			dataWriting('notificationsConfig', '2')
 
@@ -166,8 +166,15 @@ def inquery(number):
 		cData[numb] = Target(noteText, noteGrade)
 		cData[numb].flag() = noteFlag
 	if number == 4:
-		pass
+		numb = int(input("what number of target?"))
+		if len(cData) >= numb-1:
+			cData[numb].pop(numb-1)
 	if number == 5:
+		numb = int(input("what number of notification?"))
+		if len() >= numb-1:
+			notifications.pop(numb-1)
+			dataWriting('notificationsConfig', '2')
+	if number == 6:
 		return cData
 	if (number < 5):
 		dataWriting('dataConfig', '1')
@@ -176,9 +183,10 @@ def questionForUser():
 	question = int(input("""what u want from me?
 		1 - new target
 		2 - change status of target
-		3 - edit target text
-		4 - edit target grade
-		5 - watch targets on this day
+		3 - edit target text and grade
+		4 - delete target
+		5 - delete notification
+		6 - watch targets on this day
 		"""))
 	#watch targets on this day
 	#6 - delete target
