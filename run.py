@@ -11,12 +11,14 @@ def dictHandler(someDict, opening = None):
 	def openingTheTarget():
 		openNote = someDict[i1][i2][i3][elemsCounter].note
 		openFlag = someDict[i1][i2][i3][elemsCounter].flag
-		return [openNote, openFlag]
+		openGrade = someDict[i1][i2][i3][elemsCounter].grade
+		return [openNote, openFlag, openGrade]
 
 	def closingTheTarget():
 		closeNote = someDict[i1][i2][i3][elemsCounter][0]
 		closeFlag = someDict[i1][i2][i3][elemsCounter][1]
-		newExemplar = Target(closeNote)
+		closeGrade = someDict[i1][i2][i3][elemsCounter][2]
+		newExemplar = Target(closeNote, closeGrade)
 		if newExemplar.flag != closeFlag:
 			newExemplar.changeFlag()
 		return newExemplar
@@ -107,6 +109,34 @@ def checkUp(noteDay):
 		calendarData[noteDay[:4]][noteDay[5:7]].setdefault(noteDay[8:], [])
 		calendarData[noteDay[:4]][noteDay[5:7]][noteDay[8:]].append([0,0])
 
+def dayColor(fullDaysDate):
+	numberOfTargets = calendarData[fullDaysDate[:4]][fullDaysDate[5:7]][fullDaysDate[8:]][0]
+	ratio = numberOfTargets[0] / numberOfTargets[1]
+	return {
+		ratio <= usersGrades[0] : 0,
+		usersGrades[0] <= ratio < usersGrades[1] : 1,
+		usersGrades[1] <= ratio < usersGrades[2] : 2,
+		usersGrades[2] <= ratio : 3
+	}[True]
+	# заменить значиния словаря на номера цветов
+
+def printCalendar(chosenDate): 
+	daysColors = []
+	if ([todaysDate[:4]] in calendarData) and ([todaysDate[5:7]] in calendarData[todaysDate[:4]]):
+		for key in calendarData[todaysDate[:4]][todaysDate[5:7]]:
+			daysColors.append(dayColor(calendarData[todaysDate[:4]][todaysDate[5:7]][key]))
+	return daysColors
+
+def analyse():
+	specimenOfDateAnalysis = dateanalysis.Notification(todaysDate, calendarData, usersGrades[1], 
+		daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
+	for i in range(4):
+		dateanalysisWorkResults = exemplarOfDateAnalysis.controller(dateOfLastAnswer)
+		if dateanalysisWorkResults != None:
+			notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
+			dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
+			dataWriting('notificationsConfig', '2')
+
 def inquery(number):
 	noteDay = input("on what day?")
 	checkUp(noteDay)
@@ -123,13 +153,18 @@ def inquery(number):
 			if cData[numb].flag = True:
 				cData[0] += cData[numb].grade()
 			else: cData[0] -= cData[numb].grade()
+			daysColors = printCalendar(noteDay)
 	if number == 3:
 		numb = int(input("what number of target?"))
 		#наверное можно избавиться от функции edit класса target
-		outputText = cData[numb].note()
-		noteText = input("last note: ", outputText)
 		if len(cData) >= numb:
-			cData[numb] = Target(noteText)
+		outputText1 = cData[numb].note()
+		outputText2 = cData[numb].grade()
+		noteText = input("last note: ", outputText1)
+		noteGrade = input("last grade: ", outputText2)
+		noteFlag = cData[numb].flag()
+		cData[numb] = Target(noteText, noteGrade)
+		cData[numb].flag() = noteFlag
 	if number == 4:
 		pass
 	if number == 5:
@@ -148,24 +183,6 @@ def questionForUser():
 	#watch targets on this day
 	#6 - delete target
 	inquery(question)
-
-def dayColor(fullDaysDate):
-	numberOfTargets = calendarData[fullDaysDate[:4]][fullDaysDate[5:7]][fullDaysDate[8:]][0]
-	ratio = numberOfTargets[0] / numberOfTargets[1]
-	return {
-		ratio <= usersGrades[0] : 0,
-		usersGrades[0] <= ratio < usersGrades[1] : 1,
-		usersGrades[1] <= ratio < usersGrades[2] : 2,
-		usersGrades[2] <= ratio : 3
-	}[True]
-	# заменить значиния словаря на номера цветов
-
-def printCalendar(todaysDate): 
-	daysColors = []
-	if ([todaysDate[:4]] in calendarData) and ([todaysDate[5:7]] in calendarData[todaysDate[:4]]):
-		for key in calendarData[todaysDate[:4]][todaysDate[5:7]]:
-			daysColors.append(dayColor(calendarData[todaysDate[:4]][todaysDate[5:7]][key]))
-	return daysColors
 
 class Target(object):
 
@@ -198,14 +215,9 @@ if __name__ == '__main__':
 	order = date(int(yearNumber), int(monthNumber), 1).weekday()
 	daysInThisMonth = daysInMonth(yearNumber, monthNumber)
 
-	daysColors = printCalendar(daysInThisMonth)
-	questionForUser()
+	analyse()
 
-	specimenOfDateAnalysis = dateanalysis.Notification(todaysDate, calendarData, usersGrades[1], 
-		daysInMonth(LastMonth(yearNumber, monthNumber)[0], LastMonth(yearNumber, monthNumber)[1]))
-	for i in range(4):
-		dateanalysisWorkResults = exemplarOfDateAnalysis.controller(dateOfLastAnswer)
-		if dateanalysisWorkResults != None:
-			notifications[dateanalysisWorkResults[1]] = dateanalysisWorkResults
-			dateOfLastAnswer[dateanalysisWorkResults[1]] = dateanalysisWorkResults[2]
-			dataWriting('notificationsConfig', '2')
+	daysColors = printCalendar(todaysDate)
+	while True:
+		questionForUser()
+		break
