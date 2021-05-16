@@ -36,6 +36,14 @@ def dataReading(filename: str) -> None:
 	else:
 		return questionToTheUsersAssessment()
 
+# запись данных пользователя в файл
+# формат: calendarData, usersGrades, notifications
+def dataWriting(filename: str, setOfThree: list) -> None:
+	# даже при первом запуске файл будет автоматически создан при попытке его открытия
+	f = open(filename, 'w')
+	f.write(str(setOfThree))
+	f.close()
+
 
 
 class Meave(object):
@@ -56,6 +64,7 @@ class Meave(object):
 			self.calendarData[y][m].setdefault(d, [])
 			self.calendarData[y][m][d].append([0,0])
 			self.calendarData[y][m][d].append([])
+		#dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
 
 	def dateConversion(self, date: datetime.datetime) -> list:
 		y, m, d = date.year, date.month, date.day
@@ -66,6 +75,7 @@ class Meave(object):
 		cData = self.dateConversion(date)
 		cData[0][1] += grade
 		cData[1].append([note, grade, False])
+		dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
 
 	def deleteTask(self, date: datetime.datetime, number: int) -> None:
 		cData = self.dateConversion(date)
@@ -74,6 +84,7 @@ class Meave(object):
 				cData[0][0] -= cData[1][number][1]
 			cData[0][1] -= cData[1][number][1]
 			cData[1].pop(number)
+			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
 
 	def changeFlag(self, date: datetime.datetime, number: int) -> None:
 		cData = self.dateConversion(date)
@@ -86,6 +97,7 @@ class Meave(object):
 			#иначе прибавить
 				cData[1][number][2] = True
 				cData[0][0] += cData[1][number][1]
+			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
 
 	def changeTask(self, date: datetime.datetime, number: int) -> None:
 		cData = self.dateConversion(date)
@@ -104,6 +116,7 @@ class Meave(object):
 			cData[0][1] += cData[1][number][1]
 			if cData[1][number][2]:
 				cData[0][0] += cData[1][number][1]
+			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
 
 	def getTasksOfday(self, date: datetime.datetime) -> list:
 		cData = self.dateConversion(date)
@@ -123,5 +136,4 @@ if __name__ == '__main__':
 		#funcs.analyse(today,calendarData,usersGrades, dateOfLastAnswer,notifications)
 	else:
 		usersGrades = rezult[1]
-	print(calendarData, usersGrades, notifications, dateOfLastAnswer)
 	newExemplar = Meave(calendarData)
