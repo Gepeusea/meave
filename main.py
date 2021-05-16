@@ -1,5 +1,42 @@
+import os
+import ast
 import datetime
 from datetime import date
+
+
+
+def questionToTheUsersAssessment():
+	print("""
+		Предположим, вы поставили себе 10 равнозначных задач.
+		Какое количество из них вам бы достаточно было выполнить...
+		""")
+	usersGrades.append(int(input("чтобы показать удовлетворительный результат?"))/10)
+	usersGrades.append(int(input("чтобы показать хороший результат?"))/10)
+	usersGrades.append(int(input("чтобы показать отличный результат?"))/10)
+	#dataWriting('usersGradesConfig', '3')
+	return [False, usersGrades]
+
+# чтение файла с данными пользователя и запись его содержимого в словарь
+def dataReading(filename: str) -> None:
+	if os.path.isfile(filename):
+		f = open(filename)
+		k_str = f.read()
+		k_array = ast.literal_eval(k_str)
+		calendarDataPrerewrited = k_array[0]
+		calendarData = k_array[0]
+		usersGrades = k_array[1]
+		notifications = k_array[2]
+		for i in range(4):
+			if notifications[i] != None:
+				dateOfLastAnswer[i] = notifications[i][1]
+			else: 
+				dateOfLastAnswer[i] = None
+		f.close()
+		return [True, [calendarData, usersGrades, notifications, dateOfLastAnswer]]
+	else:
+		return questionToTheUsersAssessment()
+
+
 
 class Meave(object):
 
@@ -71,7 +108,20 @@ class Meave(object):
 	def getTasksOfday(self, date: datetime.datetime) -> list:
 		cData = self.dateConversion(date)
 		return cData[1]
+
+
 		
 if __name__ == '__main__':
 	calendarData = {}
+	usersGrades = []
+	notifications = [None, None, None, None]
+	dateOfLastAnswer = notifications
+	rezult = dataReading('config')
+	if rezult[0]:
+		calendarData, usersGrades, notifications, dateOfLastAnswer = rezult[1]
+		#calendarData = checkupfunc.checkUp(today,calendarData)
+		#funcs.analyse(today,calendarData,usersGrades, dateOfLastAnswer,notifications)
+	else:
+		usersGrades = rezult[1]
+	print(calendarData, usersGrades, notifications, dateOfLastAnswer)
 	newExemplar = Meave(calendarData)
