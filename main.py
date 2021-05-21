@@ -24,7 +24,7 @@ def dataReading(filename: str):
 		k_array = ast.literal_eval(k_str)
 		calendarData = k_array[0]
 		usersGrades = k_array[1]
-		notifications = k_array[2] lepLEP96
+		notifications = k_array[2]
 		for i in range(4):
 			if notifications[i] != None:
 				dateOfLastAnswer[i] = notifications[i][1]
@@ -34,11 +34,6 @@ def dataReading(filename: str):
 		return [calendarData, usersGrades, notifications, dateOfLastAnswer]
 	else:
 		return questionToTheUsersAssessment()
-
-def dataCheck(filename: str):
-	if os.path.isfile(filename):
-		dataReading(filename)
-		return True
 
 # запись данных пользователя в файл
 # формат: calendarData, usersGrades, notifications
@@ -130,6 +125,43 @@ class Meave(object):
 		cData = self.dateConversion(date)
 		return cData['allEvents']
 
+	def daysInMonth(self, year, month) -> int:
+		mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+		daysamt = mdays[int(month)-1]
+		if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+			if month == 2:
+				daysamt += 1
+		return daysamt
+
+	def dayColor(self, y, m, num) -> int:
+		colorCalculation = self.calendarData[y][m][num]['totalGrades']
+		if colorCalculation['all'] != 0:
+			ratio = colorCalculation['completed'] / colorCalculation['all']
+			return {
+				ratio <= self.usersGrades[0] : 0,
+				self.usersGrades[0] <= ratio < self.usersGrades[1] : 1,
+				self.usersGrades[1] <= ratio < self.usersGrades[2] : 2,
+				self.usersGrades[2] <= ratio : 3
+			}[True]
+		else: return 0
+		# заменить значиния словаря на номера цветов?
+
+	def printCalendar(self, date) -> list:
+		y, m, d = date.year, date.month, date.day
+		self.checkUp(y, m, d)
+		daysColors = []
+		for i in range(self.daysInMonth(y, m)):
+			num = i+1
+			double_date = [y, m, num]
+			if (y in self.calendarData):
+				if (m in self.calendarData[y]):
+					if num in self.calendarData[y][m]:
+						daysColors.append([double_date, self.dayColor(y, m, num)])
+					else:daysColors.append([double_date, 0])
+				else:daysColors.append([double_date, 0])
+			else:daysColors.append([double_date, 0])
+		return daysColors
+
 
 		
 if __name__ == '__main__':
@@ -145,3 +177,4 @@ if __name__ == '__main__':
 	else:
 		usersGrades = questionToTheUsersAssessment()
 	newExemplar = Meave(calendarData, usersGrades, notifications)
+	
