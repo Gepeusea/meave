@@ -10,9 +10,9 @@ def questionToTheUsersAssessment():
 		Предположим, вы поставили себе 10 равнозначных задач.
 		Какое количество из них вам бы достаточно было выполнить...
 		""")
-	usersGrades.append(int(input("чтобы показать удовлетворительный результат?"))/10)
-	usersGrades.append(int(input("чтобы показать хороший результат?"))/10)
-	usersGrades.append(int(input("чтобы показать отличный результат?"))/10)
+	usersGrades.append(int(input("чтобы показать удовлетворительный результат? "))/10)
+	usersGrades.append(int(input("чтобы показать хороший результат? "))/10)
+	usersGrades.append(int(input("чтобы показать отличный результат? "))/10)
 	#dataWriting('usersGradesConfig', '3')
 	return usersGrades
 
@@ -22,7 +22,7 @@ def dataReading(filename: str):
 		f = open(filename)
 		k_str = f.read()
 		k_array = ast.literal_eval(k_str)
-		calendarData = k_array[0]
+		tasksDict = k_array[0]
 		usersGrades = k_array[1]
 		notifications = k_array[2]
 		for i in range(4):
@@ -31,12 +31,12 @@ def dataReading(filename: str):
 			else: 
 				dateOfLastAnswer[i] = None
 		f.close()
-		return [calendarData, usersGrades, notifications, dateOfLastAnswer]
+		return [tasksDict, usersGrades, notifications, dateOfLastAnswer]
 	else:
 		return questionToTheUsersAssessment()
 
 # запись данных пользователя в файл
-# формат: calendarData, usersGrades, notifications
+# формат: tasksDict, usersGrades, notifications
 def dataWriting(filename: str, setOfThree: list) -> None:
 	# даже при первом запуске файл будет автоматически создан при попытке его открытия
 	f = open(filename, 'w')
@@ -47,83 +47,74 @@ def dataWriting(filename: str, setOfThree: list) -> None:
 
 class Meave(object):
 
-	__slots__ = ('calendarData', 'usersGrades', 'notifications')
+	__slots__ = ('tasksDict', 'usersGrades', 'notifications')
 
 	def __init__(self, data: dict, grades: dict, notific: dict) -> None:
-		self.calendarData = data
+		self.tasksDict = data
 		self.usersGrades = grades
 		self.notifications = notific
 
 	# проверка на наличие нужной ячейки в структуре
 	# создание ячейки в случае ее отсутствия
-	def checkUp(self, y, m, d) -> list:
-		if self.calendarData.get(y) == None:
-			self.calendarData.setdefault(y, {})
-		if self.calendarData[y].get(m) == None:
-			self.calendarData[y].setdefault(m, {})
-		if self.calendarData[y][m].get(d) == None:
-			self.calendarData[y][m].setdefault(d, {})
-			self.calendarData[y][m][d].setdefault('totalGrades', {})
-			self.calendarData[y][m][d]['totalGrades'].setdefault('completed', 0)
-			self.calendarData[y][m][d]['totalGrades'].setdefault('all', 0)
-			self.calendarData[y][m][d].setdefault('allEvents', [])
-		#dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
-
-	def dateConversion(self, date: datetime.datetime) -> list:
+	def checkUp(self, date: datetime.datetime) -> list:
 		y, m, d = date.year, date.month, date.day
-		self.checkUp(y, m, d)
-		return self.calendarData[y][m][d]
+		if self.tasksDict.get(y) == None:
+			self.tasksDict.setdefault(y, {})
+		if self.tasksDict[y].get(m) == None:
+			self.tasksDict[y].setdefault(m, {})
+		if self.tasksDict[y][m].get(d) == None:
+			self.tasksDict[y][m].setdefault(d, {})
+			self.tasksDict[y][m][d].setdefault('totalGrades', {})
+			self.tasksDict[y][m][d]['totalGrades'].setdefault('completed', 0)
+			self.tasksDict[y][m][d]['totalGrades'].setdefault('all', 0)
+			self.tasksDict[y][m][d].setdefault('allEvents', [])
+		return self.tasksDict[y][m][d]
+		#dataWriting('config', [self.tasksDict, self.usersGrades, self.notifications])
 
 	def newTask(self, note: str, grade: int, date: datetime.datetime) -> None:
-		cData = self.dateConversion(date)
-		cData['totalGrades']['all'] += grade
-		cData['allEvents'].append({'note': note, 'grade': grade, 'flag': False})
-		dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
+		tDict = self.checkUp(date)
+		tDict['totalGrades']['all'] += grade
+		tDict['allEvents'].append({'note': note, 'grade': grade, 'flag': False})
+		dataWriting('config', [self.tasksDict, self.usersGrades, self.notifications])
 
 	def deleteTask(self, date: datetime.datetime, number: int) -> None:
-		cData = self.dateConversion(date)
-		if len(cData['allEvents']) > number and number >= 0:
-			if cData['allEvents'][number]['flag']:
-				cData['totalGrades']['completed'] -= cData['allEvents'][number]['grade']
-			cData['totalGrades']['all'] -= cData['allEvents'][number]['grade']
-			cData['allEvents'].pop(number)
-			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
+		tDict = self.checkUp(date)
+		if len(tDict['allEvents']) > number and number >= 0:
+			if tDict['allEvents'][number]['flag']:
+				tDict['totalGrades']['completed'] -= tDict['allEvents'][number]['grade']
+			tDict['totalGrades']['all'] -= tDict['allEvents'][number]['grade']
+			tDict['allEvents'].pop(number)
+			dataWriting('config', [self.tasksDict, self.usersGrades, self.notifications])
 
 	def changeFlag(self, date: datetime.datetime, number: int) -> None:
-		cData = self.dateConversion(date)
-		if len(cData['allEvents']) > number and number >= 0:
+		tDict = self.checkUp(date)
+		if len(tDict['allEvents']) > number and number >= 0:
 			#если задание было помечено как выполненное, то вычесть баллы этого задания
-			if cData['allEvents'][number]['flag']:
-				cData['allEvents'][number]['flag'] = False
-				cData['totalGrades']['completed'] -= cData['allEvents'][number]['grade']
+			if tDict['allEvents'][number]['flag']:
+				tDict['allEvents'][number]['flag'] = False
+				tDict['totalGrades']['completed'] -= tDict['allEvents'][number]['grade']
 			else:
 			#иначе прибавить
-				cData['allEvents'][number]['flag'] = True
-				cData['totalGrades']['completed'] += cData['allEvents'][number]['grade']
-			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
+				tDict['allEvents'][number]['flag'] = True
+				tDict['totalGrades']['completed'] += tDict['allEvents'][number]['grade']
+			dataWriting('config', [self.tasksDict, self.usersGrades, self.notifications])
 
-	def changeTask(self, date: datetime.datetime, number: int) -> None:
-		cData = self.dateConversion(date)
-		if len(cData['allEvents']) > number and number >= 0:
-			outputText1 = cData['allEvents'][number]['note']
-			outputText2 = cData['allEvents'][number]['grade']
-			print("last note: ", outputText1)
-			noteText = input("new note: ")
-			print("last grade: ", outputText2)
-			noteGrade = int(input("new grade: "))
-			noteFlag = cData['allEvents'][number]['flag']
-			cData['totalGrades']['all'] -= cData['allEvents'][number]['grade']
-			if cData['allEvents'][number]['flag']:
-				cData['totalGrades']['completed'] -= cData['allEvents'][number]['grade']
-			cData['allEvents'][number] = {'note': noteText, 'grade': noteGrade, 'flag': noteFlag}
-			cData['totalGrades']['all'] += cData['allEvents'][number]['grade']
-			if cData['allEvents'][number]['flag']:
-				cData['totalGrades']['completed'] += cData['allEvents'][number]['grade']
-			dataWriting('config', [self.calendarData, self.usersGrades, self.notifications])
+	def changeTask(self, number: int, noteText: str, noteGrade: int, noteFlag: bool, date: datetime.datetime) -> None:
+		tDict = self.checkUp(date)
+		if len(tDict['allEvents']) > number and number >= 0:
+			noteFlag = tDict['allEvents'][number]['flag']
+			tDict['totalGrades']['all'] -= tDict['allEvents'][number]['grade']
+			if tDict['allEvents'][number]['flag']:
+				tDict['totalGrades']['completed'] -= tDict['allEvents'][number]['grade']
+			tDict['allEvents'][number] = {'note': noteText, 'grade': noteGrade, 'flag': noteFlag}
+			tDict['totalGrades']['all'] += tDict['allEvents'][number]['grade']
+			if tDict['allEvents'][number]['flag']:
+				tDict['totalGrades']['completed'] += tDict['allEvents'][number]['grade']
+			dataWriting('config', [self.tasksDict, self.usersGrades, self.notifications])
 
 	def getTasksOfday(self, date: datetime.datetime) -> list:
-		cData = self.dateConversion(date)
-		return cData['allEvents']
+		tDict = self.checkUp(date)
+		return tDict['allEvents']
 
 	def daysInMonth(self, year, month) -> int:
 		mdays = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -133,10 +124,10 @@ class Meave(object):
 				daysamt += 1
 		return daysamt
 
-	def dayColor(self, y, m, num) -> int:
-		colorCalculation = self.calendarData[y][m][num]['totalGrades']
-		if colorCalculation['all'] != 0:
-			ratio = colorCalculation['completed'] / colorCalculation['all']
+	def dayColor(self, date) -> int:
+		tDict = self.checkUp(date)
+		if tDict['totalGrades']['all'] != 0:
+			ratio = tDict['totalGrades']['completed'] / tDict['totalGrades']['all']
 			return {
 				ratio <= self.usersGrades[0] : 0,
 				self.usersGrades[0] <= ratio < self.usersGrades[1] : 1,
@@ -146,35 +137,25 @@ class Meave(object):
 		else: return 0
 		# заменить значиния словаря на номера цветов?
 
-	def printCalendar(self, date) -> list:
-		y, m, d = date.year, date.month, date.day
-		self.checkUp(y, m, d)
-		daysColors = []
-		for i in range(self.daysInMonth(y, m)):
-			num = i+1
-			double_date = [y, m, num]
-			if (y in self.calendarData):
-				if (m in self.calendarData[y]):
-					if num in self.calendarData[y][m]:
-						daysColors.append([double_date, self.dayColor(y, m, num)])
-					else:daysColors.append([double_date, 0])
-				else:daysColors.append([double_date, 0])
-			else:daysColors.append([double_date, 0])
-		return daysColors
-
 
 		
 if __name__ == '__main__':
-	calendarData = {}
+	tasksDict = {}
 	usersGrades = []
 	notifications = [None, None, None, None]
 	dateOfLastAnswer = notifications
 	if os.path.isfile('config'):
-		calendarData, usersGrades, notifications, dateOfLastAnswer = dataReading('config')
-		#date = date.today()
-		#calendarData = checkUp(today,calendarData)
-		#funcs.analyse(today,calendarData,usersGrades, dateOfLastAnswer,notifications)
+		tasksDict, usersGrades, notifications, dateOfLastAnswer = dataReading('config')
 	else:
 		usersGrades = questionToTheUsersAssessment()
-	newExemplar = Meave(calendarData, usersGrades, notifications)
+	newExemplar = Meave(tasksDict, usersGrades, notifications)
+
+	from PyQt5 import Qt, QtCore, QtWidgets
+	import qt, sys, qss
+
+	app = Qt.QApplication(sys.argv)
+	app.setStyleSheet(qss.BLACK_STACKOVERFLOW)
+	window = qt.LoadScreen(newExemplar)
+	window.show()
+	sys.exit(app.exec_())
 	
