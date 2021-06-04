@@ -4,10 +4,10 @@ import sys
 from PyQt5 import QtWidgets, Qt, QtCore
 from qss import BLACK_STACKOVERFLOW
 from uis.LoadScreenFromMainWindow import Ui_LoadScreen
+from uis.GlobalSettings import Ui_MainWindow
 
 #import mymodules
 from OpenTaskManager import TaskManager #Это ошкошечко в котором есть все задчи на день
-from FirstRegister import EditGlobalSettings #порожки
 
 import datetime
 import datedrawer
@@ -44,12 +44,40 @@ class LoadScreen(QtWidgets.QMainWindow):
 
         if counter > 100:
             self.timer.stop()
-            self.main = Calendarik(self.newExemplar)
+            if self.newExemplar.usersGrades == []:
+                self.main = EditGlobalSettings(self.newExemplar)
+                self.main.setStyleSheet(BLACK_STACKOVERFLOW)
+                self.main.resize(500, 450)
+                self.main.show()
+            else: 
+                self.main = Calendarik(self.newExemplar)
             self.main.setStyleSheet(BLACK_STACKOVERFLOW)
             self.main.resize(500, 450)
             self.main.show()
             self.close()
         counter += 1
+
+
+class EditGlobalSettings(QtWidgets.QMainWindow):
+
+    def __init__(self, newExemplar, *args, **kwargs):
+        super(EditGlobalSettings, self).__init__(*args, **kwargs)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.label_2.setText('Самый маленький порог продуктивности')
+        self.ui.label_3.setText('Средний порог продуктивности')
+        self.ui.label_4.setText('Самый большой порог продуктивности')
+        self.ui.buttons.accepted.connect(self.accept)
+        self.newExemplar = newExemplar
+
+    def accept(self):
+        val1, val2, val3 = self.ui.spinBox.value(), self.ui.spinBox_2.value(), self.ui.spinBox_3.value()
+        self.newExemplar.usersGrades = [val1/10, val2/10, val3/10]
+        self.main = Calendarik(self.newExemplar)
+        self.main.setStyleSheet(BLACK_STACKOVERFLOW)
+        self.main.resize(500, 450)
+        self.main.show()
+        self.close()
 
 
 class Calendarik(QtWidgets.QCalendarWidget):

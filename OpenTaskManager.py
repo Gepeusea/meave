@@ -62,7 +62,7 @@ class ViewTaskIn(Qt.QWidget):
         print('eto row', taskNumber) # ВЕРНЕТСЯ НОМЕР ЗАДАЧИ
         task_info = self.tasks[taskNumber]
         print('TASK INFO', task_info)
-        self.task = EditTaskClass(taskNumber, self.newExemplar, task_info[0], task_info[1], task_info[2], task_info[3])
+        self.task = EditTaskClass(taskNumber, self.newExemplar, self.date, task_info['note'], task_info['grade'], task_info['flag'])
         self.task.show()
 
     def onCellChanged(self, row, column):

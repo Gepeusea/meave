@@ -146,8 +146,6 @@ if __name__ == '__main__':
 	dateOfLastAnswer = notifications
 	if os.path.isfile('config'):
 		tasksDict, usersGrades, notifications, dateOfLastAnswer = dataReading('config')
-	else:
-		usersGrades = questionToTheUsersAssessment()
 	newExemplar = Meave(tasksDict, usersGrades, notifications)
 
 	from PyQt5 import Qt, QtCore, QtWidgets
