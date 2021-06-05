@@ -110,7 +110,7 @@ class Calendarik(QtWidgets.QCalendarWidget):
         tDict = self.newExemplar.checkUp(date)
         # y, m, d = date.year, date.month, date.day
         
-        for i in range(len(tDict['allEvents'])-1):
+        for i in range(len(tDict['allEvents'])):
             massive.append(tDict['allEvents'][i])
         # print('noo',y,m,d)
         print(tDict)

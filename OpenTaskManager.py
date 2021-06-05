@@ -87,12 +87,10 @@ class TaskManager(QtWidgets.QMainWindow):
         if tasks != None:
             #iterable_tasks = iter(tasks)
             #next(iterable_tasks,None)
-            i = 0
             #for task in iterable_tasks:
-            for j in range(len(tasks)):
-                print('ura')
+            for i in range(len(tasks)):
+                print('len(tasks):', len(tasks))
                 container.create_1(i, date)
-                i += 1
         if date:
             self.ui.current_date.setText(f'<html><head/><body><p align="center"><span style=" font-size:36pt;">{str(date)}</span></p></body></html>')
         self.ui.verticalLayout.addWidget(container)
