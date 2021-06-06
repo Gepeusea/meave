@@ -108,18 +108,13 @@ class Calendarik(QtWidgets.QCalendarWidget):
     def getTasks(self, date):
         massive = []
         tDict = self.newExemplar.checkUp(date)
-        # y, m, d = date.year, date.month, date.day
         
         for i in range(len(tDict['allEvents'])):
             massive.append(tDict['allEvents'][i])
-        # print('noo',y,m,d)
-        print(tDict)
-        print(massive)
         return massive
 
     def button_clicked(self, date: QtCore.QDate):
         tasks_in_day = self.getTasks(date.toPyDate()) #calendar data
-        print('at first',type(tasks_in_day))
         self.taskmanager = TaskManager(date.toPyDate(), self.newExemplar, tasks = tasks_in_day)
         self.taskmanager.show()
 

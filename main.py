@@ -5,17 +5,6 @@ from datetime import date
 
 
 
-def questionToTheUsersAssessment():
-	print("""
-		Предположим, вы поставили себе 10 равнозначных задач.
-		Какое количество из них вам бы достаточно было выполнить...
-		""")
-	usersGrades.append(int(input("чтобы показать удовлетворительный результат? "))/10)
-	usersGrades.append(int(input("чтобы показать хороший результат? "))/10)
-	usersGrades.append(int(input("чтобы показать отличный результат? "))/10)
-	#dataWriting('usersGradesConfig', '3')
-	return usersGrades
-
 # чтение файла с данными пользователя и запись его содержимого в словарь
 def dataReading(filename: str):
 	if os.path.isfile(filename):

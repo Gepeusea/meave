@@ -11,7 +11,6 @@ DAY_ACTIVITY = [
     Qt.QColor(143,11,113)
 ]
 def translate_to_datetime(what: str):
-    # print(what)
     a = '%Y-%m-%d'
     return datetime.strptime(what,a).date()
 

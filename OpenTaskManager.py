@@ -82,34 +82,20 @@ class TaskManager(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         container = ViewTaskIn(date, tasks, newExemplar)
-        print('at sec',type(tasks))
-        print(tasks)
-        if tasks != None:
-            #iterable_tasks = iter(tasks)
-            #next(iterable_tasks,None)
-            #for task in iterable_tasks:
-            for i in range(len(tasks)):
-                print('len(tasks):', len(tasks))
-                container.create_1(i, date)
+        for i in range(len(tasks)):
+            container.create_1(i, date)
         if date:
             self.ui.current_date.setText(f'<html><head/><body><p align="center"><span style=" font-size:36pt;">{str(date)}</span></p></body></html>')
         self.ui.verticalLayout.addWidget(container)
 
-        ## Диалоговые кнопки
-
-        dialog_buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel,  QtCore.Qt.Horizontal, self)
+        dialog_buttons = QtWidgets.QDialogButtonBox( QtWidgets.QDialogButtonBox.Cancel,  QtCore.Qt.Horizontal, self)
         dialog_buttons.setLayoutDirection(QtCore.Qt.RightToLeft)
-        dialog_buttons.accepted.connect(self.accept)
         dialog_buttons.rejected.connect(self.new_task)
         dialog_buttons.button(QtWidgets.QDialogButtonBox.Cancel).setText("Новая задача")
-        dialog_buttons.button(QtWidgets.QDialogButtonBox.Ok).setText("Сохранить")
 
         self.ui.verticalLayout.addWidget(dialog_buttons)
 
-    def accept(self):
-        print('Saved')
-
-    def new_task(self): #Новая задача, а не реджектед
+    def new_task(self):
         taskNumber = -1 #информация о том, что желаем создать новую задачу, а не изменить
         self.new_task_window = EditTaskClass(taskNumber, self.newExemplar, self.date)
         self.new_task_window.show()
