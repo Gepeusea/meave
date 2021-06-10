@@ -62,7 +62,7 @@ class ViewTaskIn(Qt.QWidget):
         print('eto row', taskNumber) # ВЕРНЕТСЯ НОМЕР ЗАДАЧИ
         task_info = self.tasks[taskNumber]
         print('TASK INFO', task_info)
-        self.task = EditTaskClass(taskNumber, self.newExemplar, self.date, task_info['note'], task_info['grade'], task_info['flag'])
+        self.task = EditTaskClass(self.newExemplar, self.date, taskNumber, task_info['note'], task_info['grade'], task_info['flag'])
         self.task.show()
 
     def onCellChanged(self, row, column):
@@ -96,6 +96,5 @@ class TaskManager(QtWidgets.QMainWindow):
         self.ui.verticalLayout.addWidget(dialog_buttons)
 
     def new_task(self):
-        taskNumber = -1 #информация о том, что желаем создать новую задачу, а не изменить
-        self.new_task_window = EditTaskClass(taskNumber, self.newExemplar, self.date)
+        self.new_task_window = EditTaskClass(self.newExemplar, self.date)
         self.new_task_window.show()

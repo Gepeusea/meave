@@ -8,17 +8,17 @@ html_text2 = '</style></head><body style=" font-family:"MS Shell Dlg 2"; font-si
 
 class EditTaskClass(QtWidgets.QMainWindow):
 
-	def __init__(self, taskNumber: int, newExemplar: object, date: datetime.datetime, text = None, level = None, flag = False, *args, **kwargs):
+	def __init__(self, newExemplar: object, date: datetime.datetime, taskNumber= None, text = None, level = None, flag = False, *args, **kwargs):
 		super(EditTaskClass, self).__init__(*args, **kwargs)
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 		self.ui.label.setText(f'<html><head/><body><p><span style=" font-size:48pt;">{date}</span></p></body></html>') #Date
 		if not text and not level:
-			html_text = html_text1 + html_text2.format('there is nothing here yet') 
+			html_text = html_text1 + html_text2.format('there is nothing here yet')
 		else:
 			html_text = html_text1 + html_text2.format(text) 
-		self.ui.current_text.setText(html_text) #Text Zadach
-		self.ui.current_level.setValue(level or 0) #Level
+		self.ui.current_text.setText(html_text)
+		self.ui.current_level.setValue(level or 0)
 
 		#"апи"
 		self.ui.buttons.accepted.connect(self.accept)
@@ -31,10 +31,11 @@ class EditTaskClass(QtWidgets.QMainWindow):
 
 	def accept(self):
 		print(f'Accepted info: {self.ui.current_text.toPlainText()}, {self.ui.current_level.value()}')
-		if self.taskNumber == -1:
+		if self.taskNumber == None:
 			self.newExemplar.newTask(self.ui.current_text.toPlainText(), self.ui.current_level.value(), self.date)
 		else: 
 			self.newExemplar.changeTask(self.taskNumber, self.ui.current_text.toPlainText(), self.ui.current_level.value(), self.flag, self.date)
+		self.close()
 
 	def reject(self):
 		self.close()

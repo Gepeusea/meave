@@ -118,13 +118,12 @@ class Meave(object):
 		if tDict['totalGrades']['all'] != 0:
 			ratio = tDict['totalGrades']['completed'] / tDict['totalGrades']['all']
 			return {
-				ratio <= self.usersGrades[0] : 0,
-				self.usersGrades[0] <= ratio < self.usersGrades[1] : 1,
-				self.usersGrades[1] <= ratio < self.usersGrades[2] : 2,
-				self.usersGrades[2] <= ratio : 3
+				ratio <= self.usersGrades[0] : Qt.QColor(244,156,59),
+				self.usersGrades[0] <= ratio < self.usersGrades[1] : Qt.QColor(242,59,27),
+				self.usersGrades[1] <= ratio < self.usersGrades[2] : Qt.QColor(197,14,78),
+				self.usersGrades[2] <= ratio : Qt.QColor(143,11,113)
 			}[True]
-		else: return 0
-		# заменить значиния словаря на номера цветов?
+		else: return Qt.QColor(244,156,59)
 
 
 		
